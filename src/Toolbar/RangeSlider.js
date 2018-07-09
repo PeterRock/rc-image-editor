@@ -16,7 +16,7 @@ const RangeSlider = (props) => {
                 value={value}
                 className="imge-range-slider__input"
             />
-            <span className="imge-range-slider__text">{value}</span>
+            <span className="imge-range-slider__text"> {value}</span>
         </div>
     )
 }
