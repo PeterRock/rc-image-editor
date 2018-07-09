@@ -4,12 +4,14 @@ import PropTypes from 'prop-types'
 const ItemIcon = (props) => {
     const {
         visible, active, name, onClick,
-        extra,
+        extra, alt, title,
     } = props
     if (visible) {
         return (
             <span className="imge-toolbar-icon__item">
                 <span
+                    alt={alt}
+                    title={title}
                     onClick={onClick}
                     className={`imge-toolbar-icon__wrapper${active ? ' active' : ''}`}
                 >

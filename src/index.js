@@ -200,6 +200,10 @@ class ImageEditor extends Component {
             this.setState({ rotating: false })
         })
     }
+    // 撤销
+    restore = () => {
+        this.imageOrigin.src = this.props.data
+    }
     // 重设编辑条按钮状态
     resetToolbar = (value) => {
         this.setState({
@@ -223,7 +227,6 @@ class ImageEditor extends Component {
         this.setState({
             penSize: event.target.value,
         })
-        console.log(event.target.value)
     }
 
     render() {
@@ -237,21 +240,29 @@ class ImageEditor extends Component {
             <div className="image-editor">
                 <div className="imge-wrapper">
                     <Toolbar>
-                        <ItemIcon onClick={this.zoomIn} name="icon-zoom-in" />
-                        <ItemIcon onClick={this.zoomOut} name="icon-zoom-out" />
-                        <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" />
-                        <ItemIcon onClick={this.rotateCanvas} name="icon-rotate-right" />
+                        <ItemIcon onClick={this.zoomIn} name="icon-zoom-in" title="放大" />
+                        <ItemIcon onClick={this.zoomOut} name="icon-zoom-out" title="缩小" />
+                        <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" title="适合窗口" />
+                        <ItemIcon onClick={this.rotateCanvas} name="icon-rotate-right" title="顺时针旋转90度" />
                         <Split />
-                        <ItemIcon active={isMosaic} visible={editable} name="icon-mosaic" onClick={this.makeMosaic} extra={
-                            <TogglePanel visible={isMosaic}>
-                                <RangeSlider onChange={this.onPenSizeChange} min={10} max={200} value={penSize} />
-                            </TogglePanel>
-                        } />
-                        <ItemIcon visible={editable} onClick={this.downloadJpg} name="icon-download" />
-                        <ItemIcon visible={!editable} onClick={this.makeEditable} name="icon-edit" />
-                        <ItemIcon visible={editable} onClick={this.save} name="icon-check" />
+                        <ItemIcon visible={editable} onClick={this.restore} name="icon-restore" title="清除所有更改" />
+                        <ItemIcon
+                            active={isMosaic}
+                            visible={editable}
+                            name="icon-mosaic"
+                            onClick={this.makeMosaic}
+                            title="马赛克"
+                            extra={
+                                <TogglePanel visible={isMosaic}>
+                                    <RangeSlider onChange={this.onPenSizeChange} min={10} max={200} value={penSize} />
+                                </TogglePanel>
+                            }
+                        />
+                        <ItemIcon visible={editable} onClick={this.downloadJpg} name="icon-download" title="导出Jpg图片" />
+                        <ItemIcon visible={!editable} onClick={this.makeEditable} name="icon-edit" title="编辑图片" />
+                        <ItemIcon visible={editable} onClick={this.save} name="icon-check" title="保存" />
                         <Split />
-                        <span onClick={this.onModalClose}><ItemIcon name="icon-close" /></span>
+                        <span onClick={this.onModalClose}><ItemIcon name="icon-close" title="关闭" /></span>
                     </Toolbar>
                     <div className="imge-container" ref={(ref) => { this.editor = ref }}>
                         <LoadingMask loading={loading} />
