@@ -48,11 +48,13 @@ class ImageEditor extends Component {
         const { editable } = this.state
         if ((editable && window.confirm('确认关闭吗？')) || !editable) {
             const { onClose } = this.props
-            this.resetToolbar({ editable: false, moveable: false })
+
+            // 处理关闭后相关操作
+            this.resetToolbar({ editable: false })
+            this.toggleMoveable(false)
+            this.imageOrigin = null
 
             onClose && onClose()
-            // 销毁相关资源
-            this.imageOrigin = null
         }
     }
 
@@ -114,6 +116,7 @@ class ImageEditor extends Component {
         context.drawImage(img, 0, 0, img.width, img.height)
         this.zoomToFit()
         this.setState({ loading: false })
+        this.toggleMoveable(true)
     }
     loadData = (data) => {
         if (!data) { console.log('image Data is empty'); return }
@@ -128,9 +131,6 @@ class ImageEditor extends Component {
 
 
     // Toolbar 操作事件
-    makeMoveable = () => {
-        this.toggleMoveable(true)
-    }
     makeEditable = () => {
         this.setState({
             editable: true,
@@ -237,7 +237,6 @@ class ImageEditor extends Component {
             <div className="image-editor">
                 <div className="imge-wrapper">
                     <Toolbar>
-                        <ItemIcon active={moveable} onClick={this.makeMoveable} name="icon-drag" />
                         <ItemIcon onClick={this.zoomIn} name="icon-zoom-in" />
                         <ItemIcon onClick={this.zoomOut} name="icon-zoom-out" />
                         <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" />
