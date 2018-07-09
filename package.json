@@ -1,9 +1,9 @@
 {
   "name": "rc-image-editor",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Pick up an image, then edit and save it.",
   "main": "./dist/index.js",
-  "repository": "http://172.29.28.7/shizhy/image-editor.git",
+  "repository": "https://github.com/PeterRock/rc-image-editor.git",
   "author": "Shizhy",
   "license": "MIT",
   "private": false,
