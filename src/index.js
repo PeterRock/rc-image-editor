@@ -1,13 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component, PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import LoadingMask from './LoadingMask'
-import Toolbar from './Toolbar'
+import Toolbar, { RangeSlider, ItemIcon, Split, TogglePanel } from './Toolbar'
 import { Canvas, Mosaic, Export, Element } from './utils'
 import './index.scss'
-
-const ToolbarItem = Toolbar.Item
-const ToolbarSplit = Toolbar.Split
-const IconButton = props => (<i className={`imge-toolbar__icon ${props.name}`} />)
 
 class ImageEditor extends Component {
     constructor(props) {
@@ -17,6 +13,7 @@ class ImageEditor extends Component {
             loading: true,
             zoomLevel: 1,
             editable: false,
+            penSize: 20,
         }
         this.imageOrigin = null
 
@@ -51,7 +48,8 @@ class ImageEditor extends Component {
         const { editable } = this.state
         if ((editable && window.confirm('确认关闭吗？')) || !editable) {
             const { onClose } = this.props
-            this.resetToolbar({ editable: false })
+            this.resetToolbar({ editable: false, moveable: false })
+
             onClose && onClose()
             // 销毁相关资源
             this.imageOrigin = null
@@ -90,12 +88,13 @@ class ImageEditor extends Component {
 
     onMosaicMouseMove = (event) => {
         if (this.mosaicMaking) {
+            const { penSize } = this.state
             const zoomLevel = this.canvasWrapper.clientWidth / this.canvas.width
             const startX = (this.mosaicStartX / zoomLevel)
             const startY = (this.mosaicStartY / zoomLevel)
             const endX = (event.offsetX / zoomLevel)
             const endY = (event.offsetY / zoomLevel)
-            Mosaic.makeMosaicGrid(this.canvas.getContext('2d'), startX, startY, endX - startX, endY - startY)
+            Mosaic.makeMosaicGrid(this.canvas.getContext('2d'), startX, startY, endX - startX, endY - startY, penSize)
             this.mosaicStartX = event.offsetX
             this.mosaicStartY = event.offsetY
         }
@@ -220,32 +219,42 @@ class ImageEditor extends Component {
     downloadJpg = () => {
         Export.toJpg(this.canvas)
     }
+    onPenSizeChange = (event) => {
+        this.setState({
+            penSize: event.target.value,
+        })
+        console.log(event.target.value)
+    }
 
     render() {
         const {
-            visible, loading, editable,
-            rotating, isMosaic, moveable,
+            visible, loading, editable, isMosaic, moveable,
+            penSize,
         } = this.state
         if (!visible) { return null }
 
         return (
             <div className="image-editor">
-                <div ref={(ref) => { this.editor = ref }} className="imge-wrapper">
+                <div className="imge-wrapper">
                     <Toolbar>
-                        <ToolbarItem active={moveable} onClick={this.makeMoveable}><IconButton name="icon-drag" /></ToolbarItem>
-                        <ToolbarItem onClick={this.zoomIn}><IconButton name="icon-zoom-in" /></ToolbarItem>
-                        <ToolbarItem onClick={this.zoomOut}><IconButton name="icon-zoom-out" /></ToolbarItem>
-                        <ToolbarItem onClick={this.zoomToFit}><IconButton name="icon-zoom-fit" /></ToolbarItem>
-                        <ToolbarItem onClick={this.rotateCanvas}><IconButton name={rotating ? 'icon-loading' : 'icon-rotate-right'} /></ToolbarItem>
-                        <ToolbarSplit />
-                        <ToolbarItem active={isMosaic} visible={editable} onClick={this.makeMosaic}><IconButton name="icon-mosaic" /></ToolbarItem>
-                        <ToolbarItem visible={editable} onClick={this.downloadJpg}><IconButton name="icon-download" /></ToolbarItem>
-                        <ToolbarItem visible={!editable} onClick={this.makeEditable}><IconButton name="icon-edit" /></ToolbarItem>
-                        <ToolbarItem visible={editable} onClick={this.save}><IconButton name="icon-check" /></ToolbarItem>
-                        <ToolbarSplit />
-                        <ToolbarItem onClick={this.onModalClose}><IconButton name="icon-close" /></ToolbarItem>
+                        <ItemIcon active={moveable} onClick={this.makeMoveable} name="icon-drag" />
+                        <ItemIcon onClick={this.zoomIn} name="icon-zoom-in" />
+                        <ItemIcon onClick={this.zoomOut} name="icon-zoom-out" />
+                        <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" />
+                        <ItemIcon onClick={this.rotateCanvas} name="icon-rotate-right" />
+                        <Split />
+                        <ItemIcon active={isMosaic} visible={editable} name="icon-mosaic" onClick={this.makeMosaic} extra={
+                            <TogglePanel visible={isMosaic}>
+                                <RangeSlider onChange={this.onPenSizeChange} min={10} max={200} value={penSize} />
+                            </TogglePanel>
+                        } />
+                        <ItemIcon visible={editable} onClick={this.downloadJpg} name="icon-download" />
+                        <ItemIcon visible={!editable} onClick={this.makeEditable} name="icon-edit" />
+                        <ItemIcon visible={editable} onClick={this.save} name="icon-check" />
+                        <Split />
+                        <span onClick={this.onModalClose}><ItemIcon name="icon-close" /></span>
                     </Toolbar>
-                    <div className="imge-container">
+                    <div className="imge-container" ref={(ref) => { this.editor = ref }}>
                         <LoadingMask loading={loading} />
                         <div
                             ref={(ref) => { this.canvasWrapper = ref }}

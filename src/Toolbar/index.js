@@ -1,21 +1,16 @@
-import React, { PureComponent } from 'react'
-import Item from './Item'
+import React from 'react'
+import Toolbar from './Toolbar'
+import RangeSlider from './RangeSlider'
+import ItemIcon from './ItemIcon'
 import './index.scss'
 
-class Toolbar extends PureComponent {
-    render() {
-        const { children } = this.props
-        return (
-            <div className="imge-toolbar">
-                <div className="imge-toolbar__actions">
-                    {children}
-                </div>
-            </div>
-        )
-    }
-}
-Toolbar.Split = () => (<span className="imge-toolbar__split" />)
+const Split = () => (<span className="imge-toolbar__split" />)
 
-Toolbar.Item = Item
+const TogglePanel = props => (
+    <div className="imge-toolbar-sub-panel" style={{ display: props.visible ? 'block' : 'none' }}>
+        {props.children}
+    </div>
+)
 
+export { Split, ItemIcon, TogglePanel, RangeSlider }
 export default Toolbar
