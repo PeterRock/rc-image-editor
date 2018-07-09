@@ -1,4 +1,4 @@
-/*! image-editor v1.0.0 by Shizhy */
+/*! @shizhy/image-editor v1.0.0 by Shizhy */
 'use strict';
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }

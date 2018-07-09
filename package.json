@@ -1,5 +1,5 @@
 {
-  "name": "image-editor",
+  "name": "@shizhy/image-editor",
   "version": "1.0.0",
   "description": "Pick up an image, then edit and save it.",
   "main": "./dist/index.js",
