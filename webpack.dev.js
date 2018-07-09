@@ -9,11 +9,6 @@ module.exports = {
     entry: {
         app: './app.js',
     },
-    output: {
-        path: path.resolve(__dirname, 'example/dist'),
-        filename: '[name].js',
-        publicPath: '/',
-    },
 
     devServer: {
         contentBase: path.resolve(__dirname, 'example/src'),
@@ -40,7 +35,7 @@ module.exports = {
     },
 
     plugins: [
-        new CleanWebpackPlugin(['example/src/dist']),
+        new CleanWebpackPlugin(['example/src/src']),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             inject: false,
