@@ -1,0 +1,30 @@
+.imge-toolbar {
+    position: absolute;
+    z-index: 1100;
+    top: 0%;
+    left: 0;
+    right: 0;
+    background: rgba(68, 68, 68, 0.74);
+    .imge-toolbar__actions {
+        float: right;
+        clear: both;
+        &>span {
+            float: left;
+            display: inline-block;
+            cursor: pointer;
+            padding: 14px;
+            margin-left: 1px;
+            &:hover,
+            &.active {
+                background-color: rgba(140, 140, 140, 0.68)
+            }
+        }
+        .imge-toolbar__split {
+            width: 1px;
+            height: 40px;
+            background: #acacac;
+            padding: 0;
+            margin: 3px 2px;
+        }
+    }
+}
