@@ -181,24 +181,26 @@ class ImageEditor extends Component {
     }
 
     // 右旋转90度
-    rotateCanvas = () => {
+    rotateCanvasDom = () => {
+        Element.rotateR90(this.canvas)
+    }
+    rotateImage = () => {
         const { rotating } = this.state
         if (rotating) { return }
         this.setState({ rotating: true })
 
-        Canvas.rotateR90(this.canvas, () => {
-            // 旋转之后处理画布的大小
-            const newWidth = this.canvasWrapper.clientHeight
-            const newHeight = this.canvasWrapper.clientWidth
-            const cwOffsetLeft = this.canvasWrapper.offsetLeft
-            const cwOffsetTop = this.canvasWrapper.offsetTop
-            this.canvasWrapper.style.width = `${newWidth}px`
-            this.canvasWrapper.style.height = `${newHeight}px`
-            this.canvasWrapper.style.top = `${cwOffsetTop + (newWidth - newHeight) / 2}px`
-            this.canvasWrapper.style.left = `${cwOffsetLeft + (newHeight - newWidth) / 2}px`
+        Canvas.rotateR90(this.canvas)
+        // 旋转之后处理画布的大小
+        const newWidth = this.canvasWrapper.clientHeight
+        const newHeight = this.canvasWrapper.clientWidth
+        const cwOffsetLeft = this.canvasWrapper.offsetLeft
+        const cwOffsetTop = this.canvasWrapper.offsetTop
+        this.canvasWrapper.style.width = `${newWidth}px`
+        this.canvasWrapper.style.height = `${newHeight}px`
+        this.canvasWrapper.style.top = `${cwOffsetTop + (newWidth - newHeight) / 2}px`
+        this.canvasWrapper.style.left = `${cwOffsetLeft + (newHeight - newWidth) / 2}px`
 
-            this.setState({ rotating: false })
-        })
+        this.setState({ rotating: false })
     }
     // 撤销
     restore = () => {
@@ -243,7 +245,7 @@ class ImageEditor extends Component {
                         <ItemIcon onClick={this.zoomIn} name="icon-zoom-in" title="放大" />
                         <ItemIcon onClick={this.zoomOut} name="icon-zoom-out" title="缩小" />
                         <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" title="适合窗口" />
-                        <ItemIcon onClick={this.rotateCanvas} name="icon-rotate-right" title="顺时针旋转90度" />
+                        <ItemIcon visible={!editable} onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
                         <Split />
                         <ItemIcon visible={editable} onClick={this.restore} name="icon-restore" title="清除所有更改" />
                         <ItemIcon
@@ -259,6 +261,7 @@ class ImageEditor extends Component {
                             }
                         />
                         <ItemIcon visible={editable} onClick={this.downloadJpg} name="icon-download" title="导出Jpg图片" />
+                        <ItemIcon visible={editable} onClick={this.rotateImage} name="icon-rotate-right" title="旋转图片(修改)" />
                         <ItemIcon visible={!editable} onClick={this.makeEditable} name="icon-edit" title="编辑图片" />
                         <ItemIcon visible={editable} onClick={this.save} name="icon-check" title="保存" />
                         <Split />

@@ -97,7 +97,6 @@ const toPng = (canvas, filename = `${(new Date()).getTime()}.jpg`, quality) => {
     imgData = imgData.replace('image/png', 'image/octet-stream')
     saveFile(imgData, filename)
 }
-
 /**
  * canvas图像内容向右侧旋转90º
  * --- 目前该方法是利用Image旋转，是存在性能问题的
@@ -105,27 +104,45 @@ const toPng = (canvas, filename = `${(new Date()).getTime()}.jpg`, quality) => {
  * @param {HTMLCanvasElement} canvas Canvas对象
  * @param {Function} callback 旋转结束之后的回掉函数
  */
-const rotateR90 = (canvas, callback) => {
-    const refCanvas = canvas
-    const imgEle = new Image(canvas.width, canvas.height)
-    imgEle.src = canvas.toDataURL()
-    imgEle.onload = () => {
-        refCanvas.width = imgEle.height
-        refCanvas.height = imgEle.width
-        const max = Math.max(imgEle.width, imgEle.height)
-        const context = refCanvas.getContext('2d')
-        context.save()
-        context.translate(max / 2, max / 2) // 向右侧平移坐标到图形中心
-        context.rotate(90 * Math.PI / 180) // 旋转180º
-        if (imgEle.width > imgEle.height) { // 宽高比不一样的图片，在平移回原点有区别
-            context.translate(-max / 2, max / 2 - imgEle.height) // width is max
-        } else {
-            context.translate(-max / 2, -max / 2) // height is max
-        }
-        context.drawImage(imgEle, 0, 0)
-        context.restore()
-        typeof callback === 'function' && callback()
+
+/**
+ * 顺时针旋转 Canvas 的ImageData 90度
+ * @param {HTMLCanvasElement} canvas Canvas
+ */
+const rotateImageDataR90 = (canvas) => {
+    const context = canvas.getContext('2d')
+    const iData = context.getImageData(0,0,canvas.width, canvas.height)
+    const W = canvas.width
+    const H = canvas.height
+    const newData = []
+    for(let i=0; i< iData.data.length; i+=4){
+        const X = i % (W*4)
+        const Y = parseInt(i/(W*4))
+        const newIndex = H*X+(H-1-Y)*4
+
+        newData[newIndex] = iData.data[i]
+        newData[newIndex+1] = iData.data[i+1]
+        newData[newIndex+2] = iData.data[i+2]
+        newData[newIndex+3] = iData.data[i+3]
     }
+    const newImgData = context.createImageData(H, W);
+
+    for (let index = 0; index < iData.data.length; index++) {
+        newImgData.data[index] = newData[index]
+    }
+    return newImgData
+}
+
+/**
+ * 顺时针旋转canvas
+ * @param {HTMLCanvasElement} canvas Canvas
+ */
+const rotateCanvasR90 = (canvas) => {
+    const imageData = rotateImageDataR90(canvas)
+    canvas.width = imageData.width
+    canvas.height = imageData.height
+    const context = canvas.getContext('2d')
+    context.putImageData(imageData, 0 ,0)
 }
 
 /**
@@ -220,7 +237,7 @@ export const Element = {
     rotateR90: rotateElementR90,
 }
 export const Canvas = {
-    rotateR90,
+    rotateR90: rotateCanvasR90
 }
 export const Mosaic = {
     makeMosaicGrid,
