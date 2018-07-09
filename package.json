@@ -1,0 +1,35 @@
+{
+  "name": "image-editor",
+  "version": "1.0.0",
+  "description": "Pick up an image, then edit and save it.",
+  "main": "./dist/index.js",
+  "repository": "http://172.29.28.7/shizhy/ImageEditor.git",
+  "author": "Shizhy",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "webpack-dev-server --progress --colors --host localhost --port 8888 --hot",
+    "build": "webpack --progress",
+    "watch": "webpack --watch --progress"
+  },
+  "dependencies": {
+    "prop-types": "^15.6.2",
+    "react": "^16.4.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^1.0.0",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^7.0.3",
+    "style-loader": "^0.21.0",
+    "webpack": "^4.15.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.4"
+  }
+}
