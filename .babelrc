@@ -11,8 +11,7 @@
             ]
         },
         "production": {
-          "presets": ["react-optimize"],
-          "plugin": ["transform-react-remove-prop-types"]
+          "presets": ["react-optimize"]
         }
     }
 }

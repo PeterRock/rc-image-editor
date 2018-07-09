@@ -11,7 +11,13 @@ module.exports = {
     output: {
         filename: '[name].js',
         path: path.resolve(__dirname, "dist"),
+        publicPath: '/',
         libraryTarget: 'commonjs2'
+    },
+    resolve: {
+        alias: {
+            'rc-image-editor': 'src/ImageEditor.js'
+        }
     },
 
     module: {

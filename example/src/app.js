@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import ImageEditor from '../../src'
+import ImageEditor from '../../dist'
 
 const DEMO_IMG = './demo.jpg'
 
