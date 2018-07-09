@@ -6,7 +6,7 @@
   "repository": "http://172.29.28.7/shizhy/image-editor.git",
   "author": "Shizhy",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.js --progress --colors --hot",
     "build": "webpack --progress",
