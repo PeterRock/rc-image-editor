@@ -224,11 +224,13 @@ const zoomToFit = (element, originWidth, originHeight, targetWidth, targetHeight
 }
 const rotateElementR90 = (element) => {
     const value = element.style.transform.match(/\d+/)
+    let deg = 90
     if (Array.isArray(value)) {
-        element.style.transform = `rotate(${parseInt(value[0]) + 90}deg)`
-    } else {
-        element.style.transform = "rotate(90deg)"
+        deg = parseInt(value[0]) + 90
     }
+    const rotateStr = `rotate(${deg}deg)`
+    element.style.transform = rotateStr
+    element.style['-ms-transform'] = rotateStr
 }
 
 export const Element = {
