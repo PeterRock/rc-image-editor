@@ -205,10 +205,19 @@ const zoomToFit = (element, originWidth, originHeight, targetWidth, targetHeight
 
     return destWidth / originWidth
 }
+const rotateElementR90 = (element) => {
+    const value = element.style.transform.match(/\d+/)
+    if (Array.isArray(value)) {
+        element.style.transform = `rotate(${parseInt(value[0]) + 90}deg)`
+    } else {
+        element.style.transform = "rotate(90deg)"
+    }
+}
 
 export const Element = {
     zoom,
     zoomToFit,
+    rotateR90: rotateElementR90,
 }
 export const Canvas = {
     rotateR90,
