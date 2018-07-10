@@ -245,7 +245,7 @@ class ImageEditor extends Component {
                         <ItemIcon onClick={this.zoomIn} name="icon-zoom-in" title="放大" />
                         <ItemIcon onClick={this.zoomOut} name="icon-zoom-out" title="缩小" />
                         <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" title="适合窗口" />
-                        <ItemIcon onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
+                        <ItemIcon visible={!editable} onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
                         <Split />
                         <ItemIcon visible={editable} onClick={this.restore} name="icon-restore" title="清除所有更改" />
                         <ItemIcon
