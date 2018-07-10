@@ -111,25 +111,22 @@ const toPng = (canvas, filename = `${(new Date()).getTime()}.jpg`, quality) => {
  */
 const rotateImageDataR90 = (canvas) => {
     const context = canvas.getContext('2d')
-    const iData = context.getImageData(0,0,canvas.width, canvas.height)
+    const iData = context.getImageData(0, 0, canvas.width, canvas.height)
     const W = canvas.width
     const H = canvas.height
-    const newData = []
-    for(let i=0; i< iData.data.length; i+=4){
-        const X = i % (W*4)
-        const Y = parseInt(i/(W*4))
-        const newIndex = H*X+(H-1-Y)*4
-
-        newData[newIndex] = iData.data[i]
-        newData[newIndex+1] = iData.data[i+1]
-        newData[newIndex+2] = iData.data[i+2]
-        newData[newIndex+3] = iData.data[i+3]
-    }
+    const dataLen = iData.data.length
     const newImgData = context.createImageData(H, W);
+    for (let i = 0; i < dataLen; i += 4) {
+        const X = i % (W * 4)
+        const Y = parseInt(i / (W * 4))
+        const newIndex = H * X + ((H - 1) - Y) * 4
 
-    for (let index = 0; index < iData.data.length; index++) {
-        newImgData.data[index] = newData[index]
+        newImgData.data[newIndex] = iData.data[i]
+        newImgData.data[newIndex + 1] = iData.data[i + 1]
+        newImgData.data[newIndex + 2] = iData.data[i + 2]
+        newImgData.data[newIndex + 3] = iData.data[i + 3]
     }
+
     return newImgData
 }
 
@@ -142,7 +139,7 @@ const rotateCanvasR90 = (canvas) => {
     canvas.width = imageData.width
     canvas.height = imageData.height
     const context = canvas.getContext('2d')
-    context.putImageData(imageData, 0 ,0)
+    context.putImageData(imageData, 0, 0)
 }
 
 /**
