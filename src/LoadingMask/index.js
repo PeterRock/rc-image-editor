@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import './loading.scss'
 
 export default class LoadingMask extends PureComponent {
     render() {
