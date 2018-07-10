@@ -214,9 +214,9 @@ class ImageEditor extends Component {
         })
     }
     save = () => {
-        const { onSaveDataURL } = this.props
-        if (typeof onSaveDataURL === 'function') {
-            onSaveDataURL(this.canvas && this.canvas.toDataURL())
+        const { onSave } = this.props
+        if (typeof onSave === 'function') {
+            onSave(this.canvas ? this.canvas.toDataURL() : null)
         }
         this.setState({
             editable: false,
@@ -283,12 +283,12 @@ class ImageEditor extends Component {
 }
 ImageEditor.propTypes = {
     onClose: PropTypes.func,
-    onSaveDataURL: PropTypes.func,
+    onSave: PropTypes.func,
     data: PropTypes.string,
 }
 ImageEditor.defaultProps = {
     onClose: null,
-    onSaveDataURL: null,
+    onSave: null,
     data: null,
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "rc-image-editor",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Pick up an image, then edit and save it.",
   "main": "./dist/index.js",
   "repository": "https://github.com/PeterRock/rc-image-editor.git",
