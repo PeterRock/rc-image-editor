@@ -1,6 +1,6 @@
 const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const vConsolePlugin = require('vconsole-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -12,7 +12,7 @@ module.exports = {
 
     devServer: {
         contentBase: path.resolve(__dirname, 'example/src'),
-        host: 'localhost',
+        host: '0.0.0.0',
         port: 8001,
     },
 
@@ -35,7 +35,9 @@ module.exports = {
     },
 
     plugins: [
-        new CleanWebpackPlugin(['example/src/src']),
+        new vConsolePlugin({
+            enable: true,
+        }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             inject: false,

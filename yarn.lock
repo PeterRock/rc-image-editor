@@ -5295,6 +5295,16 @@ vary@~1.1.2:
   version "1.1.2"
   resolved "http://172.29.28.3:4873/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
 
+vconsole-webpack-plugin@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/vconsole-webpack-plugin/-/vconsole-webpack-plugin-1.4.0.tgz#76c07a320ae876b66c80477c6c7cc1b90712a542"
+  dependencies:
+    vconsole "^3.1.0"
+
+vconsole@^3.1.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/vconsole/-/vconsole-3.2.0.tgz#960e2877d685a9543f5f30ec055a66a96ac15bb5"
+
 verror@1.10.0:
   version "1.10.0"
   resolved "http://172.29.28.3:4873/verror/-/verror-1.10.0.tgz#3a105ca17053af55d6e270c1f8288682e18da400"
