@@ -2,7 +2,7 @@ import React, { Component, PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import LoadingMask from './LoadingMask'
 import Toolbar, { RangeSlider, ItemIcon, Split, TogglePanel } from './Toolbar'
-import { Canvas, Mosaic, Export, Element } from './utils'
+import { Canvas, Mosaic, Export, Element, Event, Util } from './utils'
 import './index.scss'
 
 class ImageEditor extends Component {
@@ -17,9 +17,12 @@ class ImageEditor extends Component {
         }
         this.imageOrigin = null
 
-        // 画板拖动相关
-        this.dragStartX = 0
-        this.dragStartY = 0
+        // 事件处理相关
+        this.listenMoving = false
+        this.mosaicMaking = false
+        this.startPoint = { x: 0, y: 0 } // 点击的开始点
+        this.startPoints2 = null // 开始触摸时的两个点
+        this.penStartPoint = { x: 0, y: 0 } // 画笔起点
     }
 
     componentDidMount() {
@@ -58,24 +61,47 @@ class ImageEditor extends Component {
         }
     }
 
+
     // 画布容器拖动事件 -------
+    canvasWrapperMoveTo = (offsetX, offsetY) => {
+        const distX = this.canvasWrapper.offsetLeft + offsetX
+        const distY = this.canvasWrapper.offsetTop + offsetY
+        this.canvasWrapper.style.left = `${distX}px`
+        this.canvasWrapper.style.top = `${distY}px`
+    }
     onCanvasEditorMouseDown = (event) => {
         event.preventDefault()
         event.stopPropagation()
-        this.dragMoving = true
-        this.dragStartX = event.clientX - this.canvasWrapper.offsetLeft
-        this.dragStartY = event.clientY - this.canvasWrapper.offsetTop
+        this.listenMoving = true
+        this.startPoint = Event.getClickPoint(event)
+        // 开始触摸的两个点和触摸时候的原始缩放比例
+        this.startPoints2 = Event.getTouchPoints2(event)
+        this.zoomLevelStart = this.state.zoomLevel
     }
     onCanvasEditorMouseMove = (event) => {
-        if (this.dragMoving) {
-            this.canvasWrapper.style.left = `${event.clientX - this.dragStartX}px`
-            this.canvasWrapper.style.top = `${event.clientY - this.dragStartY}px`
+        if (this.listenMoving) {
+            // 处理是双指缩放问题还是单点移动
+            const currentPoints = Event.getTouchPoints2(event)
+            if (this.startPoints2 && currentPoints) {
+                // 双指缩放, 根据开始两点的间距和现在两点间距比，乘以原始缩放比例得到新的缩放比例
+                const { zoomLevelStart } = this
+                const { offsetX: distanceX, offsetY: distanceY } = Event.getPointOffset(this.startPoints2[0], this.startPoints2[1])
+                const distanceStart = Math.sqrt(distanceX * distanceX + distanceY * distanceY)
+                const { offsetX, offsetY } = Event.getPointOffset(currentPoints[0], currentPoints[1])
+                const distanceNow = Math.sqrt(offsetX * offsetX + offsetY * offsetY)
+                this.zoomTo(zoomLevelStart * distanceNow / distanceStart)
+            } else {
+                const currentPoint = Event.getClickPoint(event)
+                const { offsetX, offsetY } = Event.getPointOffset(this.startPoint, currentPoint)
+                this.startPoint = currentPoint
+                this.canvasWrapperMoveTo(offsetX, offsetY)
+            }
         }
     }
     onCanvasEditorMouseUp = () => {
-        this.dragMoving = false
-        this.dragStartX = 0
-        this.dragStartY = 0
+        this.listenMoving = false
+        this.startPoint = { x: 0, y: 0 }
+        this.startPoints2 = null
     }
     // ------- 画布容器拖动事件
 
@@ -84,25 +110,36 @@ class ImageEditor extends Component {
         event.preventDefault()
         event.stopPropagation()
         this.mosaicMaking = true
-        this.mosaicStartX = event.offsetX
-        this.mosaicStartY = event.offsetY
+        this.penStartPoint = Event.getClickPoint(event)
     }
 
     onMosaicMouseMove = (event) => {
         if (this.mosaicMaking) {
             const { penSize } = this.state
-            const zoomLevel = this.canvasWrapper.clientWidth / this.canvas.width
-            const startX = (this.mosaicStartX / zoomLevel)
-            const startY = (this.mosaicStartY / zoomLevel)
-            const endX = (event.offsetX / zoomLevel)
-            const endY = (event.offsetY / zoomLevel)
-            Mosaic.makeMosaicGrid(this.canvas.getContext('2d'), startX, startY, endX - startX, endY - startY, penSize)
-            this.mosaicStartX = event.offsetX
-            this.mosaicStartY = event.offsetY
+            const { clientWidth, offsetLeft, offsetTop } = this.canvasWrapper
+            const zoomLevel = clientWidth / this.canvas.width
+
+            const { x, y } = this.penStartPoint
+            const currentPoint = Event.getClickPoint(event)
+            let { offsetX, offsetY } = Event.getPointOffset(this.penStartPoint, currentPoint)
+            // 处理边缘溢出的情况
+            const drawX = (x - offsetLeft) - penSize / 2
+            const drawY = (y - offsetTop) - penSize / 2
+
+            Mosaic.makeMosaicGrid(
+                this.canvas.getContext('2d'),
+                drawX / zoomLevel,
+                drawY / zoomLevel,
+                offsetX / zoomLevel,
+                offsetY / zoomLevel,
+                penSize,
+            )
+            this.penStartPoint = currentPoint
         }
     }
     onMosaicMouseUp = () => {
         this.mosaicMaking = false
+        this.penStartPoint = null
     }
     // ------- 打码操作事件
 
@@ -142,6 +179,10 @@ class ImageEditor extends Component {
         this.canvas.onmousemove = isMosaic ? null : this.onMosaicMouseMove
         this.canvas.onmouseup = isMosaic ? null : this.onMosaicMouseUp
         this.canvas.onmouseleave = isMosaic ? null : this.onMosaicMouseUp
+        this.canvas.ontouchstart = isMosaic ? null : this.onMosaicMouseDown
+        this.canvas.ontouchmove = isMosaic ? null : this.onMosaicMouseMove
+        this.canvas.ontouchend = isMosaic ? null : this.onMosaicMouseUp
+        this.canvas.ontouchcancel = isMosaic ? null : this.onMosaicMouseUp
         this.resetToolbar({ isMosaic: !isMosaic })
     }
     toggleMoveable = (moveable) => {
@@ -151,17 +192,20 @@ class ImageEditor extends Component {
             this.editor[op]('mousemove', this.onCanvasEditorMouseMove)
             this.editor[op]('mouseup', this.onCanvasEditorMouseUp)
             this.editor[op]('mouseleave', this.onCanvasEditorMouseUp)
+
+            this.editor[op]('touchstart', this.onCanvasEditorMouseDown)
+            this.editor[op]('touchmove', this.onCanvasEditorMouseMove)
+            this.editor[op]('touchend', this.onCanvasEditorMouseUp)
+            this.editor[op]('touchcancel', this.onCanvasEditorMouseUp)
             this.setState({ moveable })
         }
     }
 
     zoomIn = () => {
-        console.log('放大')
         const { zoomLevel } = this.state
         this.zoomTo(zoomLevel * 1.2)
     }
     zoomOut = () => {
-        console.log('缩小')
         const { zoomLevel } = this.state
         this.zoomTo(zoomLevel * 0.8)
     }
@@ -230,20 +274,31 @@ class ImageEditor extends Component {
             penSize: event.target.value,
         })
     }
+    dealScroll = (visible) => {
+        if (visible) {
+            document.body.style.height = '100%'
+            document.body.style.overflow = 'hidden'
+        } else {
+            document.body.style.height = ''
+            document.body.style.overflow = ''
+        }
+    }
 
     render() {
         const {
             visible, loading, editable, isMosaic, moveable,
             penSize,
         } = this.state
+        this.dealScroll(visible)
+        const isMobile = Util.isMobile()
         if (!visible) { return null }
 
         return (
             <div className="image-editor">
                 <div className="imge-wrapper">
                     <Toolbar>
-                        <ItemIcon onClick={this.zoomIn} name="icon-zoom-in" title="放大" />
-                        <ItemIcon onClick={this.zoomOut} name="icon-zoom-out" title="缩小" />
+                        <ItemIcon visible={!isMobile} onClick={this.zoomIn} name="icon-zoom-in" title="放大" />
+                        <ItemIcon visible={!isMobile} onClick={this.zoomOut} name="icon-zoom-out" title="缩小" />
                         <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" title="适合窗口" />
                         <ItemIcon visible={!editable} onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
                         <Split />

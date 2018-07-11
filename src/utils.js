@@ -231,10 +231,62 @@ const rotateElementR90 = (element) => {
     element.style['-ms-transform'] = rotateStr
 }
 
+/**
+ * 获取点击点在容器的坐标，返回 { x, y }
+ */
+const getClickPoint = (event) => {
+    if (event instanceof TouchEvent) {
+        return {
+            x: Math.round(event.touches[0].clientX),
+            y: Math.round(event.touches[0].clientY),
+        }
+    } else if (event instanceof MouseEvent) {
+        return {
+            x: event.clientX,
+            y: event.clientY,
+        }
+    }
+    return { x: 0, y: 0 }
+}
+// 获取第二个触摸点，没有的话返回null
+const getTouchPoints2 = (event) => {
+    if (event instanceof TouchEvent && event.touches.length > 1) {
+        return [{
+            x: Math.round(event.touches[0].clientX),
+            y: Math.round(event.touches[0].clientY),
+        }, {
+            x: Math.round(event.touches[1].clientX),
+            y: Math.round(event.touches[1].clientY),
+        }]
+    }
+    return null
+}
+/**
+ * 返回两个点之间的横纵坐标差
+ */
+const getPointOffset = (point1, point2) => {
+    return {
+        offsetX: point2.x - point1.x,
+        offsetY: point2.y - point1.y,
+    }
+}
+
+/**
+ * Util Functions
+ */
+const isMobile = () => {
+    return /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)
+}
+
 export const Element = {
     zoom,
     zoomToFit,
     rotateR90: rotateElementR90,
+}
+export const Event = {
+    getClickPoint,
+    getTouchPoints2,
+    getPointOffset,
 }
 export const Canvas = {
     rotateR90: rotateCanvasR90
@@ -245,4 +297,7 @@ export const Mosaic = {
 export const Export = {
     toJpg,
     toPng,
+}
+export const Util = {
+    isMobile,
 }
