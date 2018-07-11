@@ -204,12 +204,13 @@ const zoomToFit = (element, originWidth, originHeight, targetWidth, targetHeight
     const minHeight = Math.min(targetHeight, originHeight)
     let destWidth = 0
     let destHeight = 0
-    if (originWidth > originHeight) {
-        destWidth = minWidth
-        destHeight = destWidth / originWidth * originHeight
-    } else {
+    // 根据目标容器处理，而非根据原图
+    if (targetWidth >= targetHeight) {
         destHeight = minHeight
         destWidth = destHeight / originHeight * originWidth
+    } else {
+        destWidth = minWidth
+        destHeight = destWidth / originWidth * originHeight
     }
     // 设置图片居中显示, 画布容器进行缩放
     cWrapper.style.width = `${destWidth}px`
