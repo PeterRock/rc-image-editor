@@ -235,12 +235,12 @@ const rotateElementR90 = (element) => {
  * 获取点击点在容器的坐标，返回 { x, y }
  */
 const getClickPoint = (event) => {
-    if (event instanceof TouchEvent) {
+    if (event.type.indexOf('touch') > -1) {
         return {
             x: Math.round(event.touches[0].clientX),
             y: Math.round(event.touches[0].clientY),
         }
-    } else if (event instanceof MouseEvent) {
+    } else if (event.type.indexOf('mouse') > -1) {
         return {
             x: event.clientX,
             y: event.clientY,
@@ -250,7 +250,7 @@ const getClickPoint = (event) => {
 }
 // 获取第二个触摸点，没有的话返回null
 const getTouchPoints2 = (event) => {
-    if (event instanceof TouchEvent && event.touches.length > 1) {
+    if (event.type.indexOf('touch') > -1 && event.touches.length > 1) {
         return [{
             x: Math.round(event.touches[0].clientX),
             y: Math.round(event.touches[0].clientY),
