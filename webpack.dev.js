@@ -5,9 +5,10 @@ const vConsolePlugin = require('vconsole-webpack-plugin');
 module.exports = {
     mode: 'development',
 
-    context: path.resolve(__dirname, 'example/src'),
+    context: path.resolve(__dirname),
+
     entry: {
-        app: './app.js',
+        app: ["@babel/polyfill", "./example/src/app.js"],
     },
 
     devServer: {

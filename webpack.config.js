@@ -5,7 +5,7 @@ module.exports = {
     mode: 'production',
 
     entry: {
-        index: './src/index.js'
+        index: ["@babel/polyfill", "./src/index.js"],
     },
 
     output: {

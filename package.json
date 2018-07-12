@@ -14,6 +14,7 @@
     "prepare": "yarn run build"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.0.0-beta.53",
     "prop-types": "^15.6.2",
     "react": "^16.4.1"
   },
