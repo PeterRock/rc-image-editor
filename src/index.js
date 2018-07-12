@@ -35,6 +35,8 @@ class ImageEditor extends Component {
                 this.setState({
                     visible: nextProps.visible,
                 })
+                this.dealScroll(nextProps.visible)
+
                 // 当props切换时候，只有当 visible 显示时候，data的变化才有意义
                 if (nextProps.visible && 'data' in nextProps) {
                     this.loadData(nextProps.data)
@@ -55,6 +57,7 @@ class ImageEditor extends Component {
             // 处理关闭后相关操作
             this.resetToolbar({ editable: false })
             this.toggleMoveable(false)
+            this.dealScroll(false)
             this.imageOrigin = null
 
             onClose && onClose()
