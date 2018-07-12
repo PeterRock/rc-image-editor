@@ -46,6 +46,7 @@ class ImageEditor extends Component {
     }
 
     componentWillUnmount() {
+        this.dealScroll(false)
         this.toggleMoveable(false)
     }
 
