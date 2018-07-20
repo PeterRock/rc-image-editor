@@ -50,6 +50,13 @@ class ImageEditorDemo extends React.PureComponent {
                     onClose={this.afterClose}
                     onSaveDataURL={this.onSave}
                     data={data}
+                    toolbar={{
+                        mosaic: true,
+                        restore: true,
+                        downloadJpg: true,
+                        rotate: true,
+                    }}
+                    editable
                 />
             </div>
         )
