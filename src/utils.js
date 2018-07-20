@@ -220,6 +220,11 @@ const zoomToFit = (element, originWidth, originHeight, targetWidth, targetHeight
 
     return destWidth / originWidth
 }
+const rotateElementRestore = (element) => {
+    const rotateStr = 'rotate(0)'
+    element.style.transform = rotateStr
+    element.style['-ms-transform'] = rotateStr
+}
 const rotateElementR90 = (element) => {
     const value = element.style.transform.match(/\d+/)
     let deg = 90
@@ -282,6 +287,7 @@ export const Element = {
     zoom,
     zoomToFit,
     rotateR90: rotateElementR90,
+    rotateRestore: rotateElementRestore,
 }
 export const Event = {
     getClickPoint,

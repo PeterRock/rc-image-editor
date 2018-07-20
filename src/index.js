@@ -1,4 +1,4 @@
-import React, { Component, PureComponent, Fragment } from 'react'
+import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import LoadingMask from './LoadingMask'
 import Toolbar, { RangeSlider, ItemIcon, Split, TogglePanel } from './Toolbar'
@@ -12,7 +12,7 @@ class ImageEditor extends Component {
             visible: !!props.visible,
             loading: true,
             zoomLevel: 1,
-            editable: false,
+            isEditing: false,
             penSize: 20,
         }
         this.imageOrigin = null
@@ -51,12 +51,12 @@ class ImageEditor extends Component {
     }
 
     onModalClose = () => {
-        const { editable } = this.state
-        if ((editable && window.confirm('确认关闭吗？')) || !editable) {
+        const { isEditing } = this.state
+        if ((isEditing && window.confirm('确认关闭吗？')) || !isEditing) {
             const { onClose } = this.props
 
             // 处理关闭后相关操作
-            this.resetToolbar({ editable: false })
+            this.resetToolbar({ isEditing: false })
             this.toggleMoveable(false)
             this.dealScroll(false)
             this.imageOrigin = null
@@ -172,9 +172,10 @@ class ImageEditor extends Component {
 
 
     // Toolbar 操作事件
-    makeEditable = () => {
+    startEditing = () => {
+        Element.rotateRestore(this.canvas)
         this.setState({
-            editable: true,
+            isEditing: true,
         })
     }
     makeMosaic = () => {
@@ -267,7 +268,7 @@ class ImageEditor extends Component {
             onSave(this.canvas ? this.canvas.toDataURL() : null)
         }
         this.setState({
-            editable: false,
+            isEditing: false,
         })
     }
     downloadJpg = () => {
@@ -290,7 +291,7 @@ class ImageEditor extends Component {
 
     render() {
         const {
-            visible, loading, editable, isMosaic, moveable,
+            visible, loading, isEditing, isMosaic, moveable,
             penSize,
         } = this.state
         this.dealScroll(visible)
@@ -304,25 +305,28 @@ class ImageEditor extends Component {
                         <ItemIcon visible={!isMobile} onClick={this.zoomIn} name="icon-zoom-in" title="放大" />
                         <ItemIcon visible={!isMobile} onClick={this.zoomOut} name="icon-zoom-out" title="缩小" />
                         <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" title="适合窗口" />
-                        <ItemIcon visible={!editable} onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
+                        <ItemIcon visible={!isEditing} onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
                         <Split />
-                        <ItemIcon visible={editable} onClick={this.restore} name="icon-restore" title="清除所有更改" />
-                        <ItemIcon
-                            active={isMosaic}
-                            visible={editable}
-                            name="icon-mosaic"
-                            onClick={this.makeMosaic}
-                            title="马赛克"
-                            extra={
-                                <TogglePanel visible={isMosaic}>
-                                    <RangeSlider onChange={this.onPenSizeChange} min={10} max={200} value={penSize} />
-                                </TogglePanel>
-                            }
-                        />
-                        <ItemIcon visible={editable} onClick={this.downloadJpg} name="icon-download" title="导出Jpg图片" />
-                        <ItemIcon visible={editable} onClick={this.rotateImage} name="icon-rotate-right" title="旋转图片(修改)" />
-                        <ItemIcon visible={!editable} onClick={this.makeEditable} name="icon-edit" title="编辑图片" />
-                        <ItemIcon visible={editable} onClick={this.save} name="icon-check" title="保存" />
+                        {isEditing && (
+                            <Fragment>
+                                <ItemIcon onClick={this.restore} name="icon-restore" title="清除所有更改" />
+                                <ItemIcon
+                                    active={isMosaic}
+                                    name="icon-mosaic"
+                                    onClick={this.makeMosaic}
+                                    title="马赛克"
+                                    extra={
+                                        <TogglePanel visible={isMosaic}>
+                                            <RangeSlider onChange={this.onPenSizeChange} min={10} max={200} value={penSize} />
+                                        </TogglePanel>
+                                    }
+                                />
+                                <ItemIcon onClick={this.downloadJpg} name="icon-download" title="导出Jpg图片" />
+                                <ItemIcon onClick={this.rotateImage} name="icon-rotate-right" title="旋转图片(修改)" />
+                            </Fragment>)
+                        }
+                        <ItemIcon visible={!isEditing} onClick={this.startEditing} name="icon-edit" title="编辑图片" />
+                        <ItemIcon visible={isEditing} onClick={this.save} name="icon-check" title="保存" />
                         <Split />
                         <span onClick={this.onModalClose}><ItemIcon name="icon-close" title="关闭" /></span>
                     </Toolbar>
