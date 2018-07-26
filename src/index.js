@@ -192,14 +192,15 @@ class ImageEditor extends Component {
 
     makeMosaic = () => {
         const { isMosaic } = this.state
-        this.canvas.onmousedown = isMosaic ? null : this.onMosaicMouseDown
-        this.canvas.onmousemove = isMosaic ? null : this.onMosaicMouseMove
-        this.canvas.onmouseup = isMosaic ? null : this.onMosaicMouseUp
-        this.canvas.onmouseleave = isMosaic ? null : this.onMosaicMouseUp
-        this.canvas.ontouchstart = isMosaic ? null : this.onMosaicMouseDown
-        this.canvas.ontouchmove = isMosaic ? null : this.onMosaicMouseMove
-        this.canvas.ontouchend = isMosaic ? null : this.onMosaicMouseUp
-        this.canvas.ontouchcancel = isMosaic ? null : this.onMosaicMouseUp
+        const op = isMosaic ? 'removeEventListener' : 'addEventListener'
+        this.canvas[op]('mousedown', this.onMosaicMouseDown)
+        this.canvas[op]('mousemove', this.onMosaicMouseMove)
+        this.canvas[op]('mouseup', this.onMosaicMouseUp)
+        this.canvas[op]('mouseleave', this.onMosaicMouseUp)
+        this.canvas[op]('touchstart', this.onMosaicMouseDown)
+        this.canvas[op]('touchmove', this.onMosaicMouseMove)
+        this.canvas[op]('touchend', this.onMosaicMouseUp)
+        this.canvas[op]('touchcancel', this.onMosaicMouseUp)
         this.resetToolbar({ isMosaic: !isMosaic })
     }
 
@@ -288,7 +289,8 @@ class ImageEditor extends Component {
         if (typeof onSave === 'function') {
             onSave(this.canvas ? this.canvas.toDataURL() : null)
         }
-        this.setState({
+        this.makeMosaic()
+        this.resetToolbar({
             isEditing: false,
         })
     }
@@ -297,9 +299,9 @@ class ImageEditor extends Component {
         Export.toJpg(this.canvas)
     }
 
-    onPenSizeChange = (event) => {
+    onPenSizeChange = (value) => {
         this.setState({
-            penSize: event.target.value,
+            penSize: value,
         })
     }
 
@@ -372,7 +374,7 @@ class ImageEditor extends Component {
                             className="canvas-wrapper"
                         >
                             <canvas ref={(ref) => { this.canvas = ref }}>
-您的浏览器不支持canvas
+                                您的浏览器不支持canvas
                             </canvas>
                         </div>
                     </div>
