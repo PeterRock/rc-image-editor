@@ -8,16 +8,16 @@
 const MOSAIC_PEN_LEN = 20
 
 const drawRect = (ctx, x, y, width, height, fillStyle, lineWidth, strokeStyle, globalAlpha) => {
-    const context = ctx
-    context.beginPath()
-    context.rect(x, y, width, height)
-    context.lineWidth = lineWidth
-    context.strokeStyle = strokeStyle
-    fillStyle && (context.fillStyle = fillStyle)
-    globalAlpha && (context.globalAlpha = globalAlpha)
+    const drawCtx = ctx
+    drawCtx.beginPath()
+    drawCtx.rect(x, y, width, height)
+    drawCtx.lineWidth = lineWidth
+    drawCtx.strokeStyle = strokeStyle
+    if (fillStyle) drawCtx.fillStyle = fillStyle
+    if (globalAlpha) drawCtx.globalAlpha = globalAlpha
 
-    context.fill()
-    context.stroke()
+    drawCtx.fill()
+    drawCtx.stroke()
 }
 const setColor = (content, x, y, penLen) => {
     const ctx = content
@@ -110,15 +110,15 @@ const toPng = (canvas, filename = `${(new Date()).getTime()}.jpg`, quality) => {
  * @param {HTMLCanvasElement} canvas Canvas
  */
 const rotateImageDataR90 = (canvas) => {
-    const context = canvas.getContext('2d')
-    const iData = context.getImageData(0, 0, canvas.width, canvas.height)
+    const canvasCtx = canvas.getContext('2d')
+    const iData = canvasCtx.getImageData(0, 0, canvas.width, canvas.height)
     const W = canvas.width
     const H = canvas.height
     const dataLen = iData.data.length
-    const newImgData = context.createImageData(H, W);
+    const newImgData = canvasCtx.createImageData(H, W)
     for (let i = 0; i < dataLen; i += 4) {
         const X = i % (W * 4)
-        const Y = parseInt(i / (W * 4))
+        const Y = parseInt(i / (W * 4), 10)
         const newIndex = H * X + ((H - 1) - Y) * 4
 
         newImgData.data[newIndex] = iData.data[i]
@@ -138,8 +138,8 @@ const rotateCanvasR90 = (canvas) => {
     const imageData = rotateImageDataR90(canvas)
     canvas.width = imageData.width
     canvas.height = imageData.height
-    const context = canvas.getContext('2d')
-    context.putImageData(imageData, 0, 0)
+    const canvasCtx = canvas.getContext('2d')
+    canvasCtx.putImageData(imageData, 0, 0)
 }
 
 /**
@@ -166,7 +166,7 @@ const zoom = (element, originWidth, originHeight, zoomLevel, max = 20000, min = 
     if (max && Math.min(newWidth, newHeight) > max) {
         window.console.info('图片过大')
         return
-    } else if (min && Math.max(newWidth, newHeight) < min) {
+    } if (min && Math.max(newWidth, newHeight) < min) {
         window.console.info('图片过小')
         return
     }
@@ -229,7 +229,7 @@ const rotateElementR90 = (element) => {
     const value = element.style.transform.match(/\d+/)
     let deg = 90
     if (Array.isArray(value)) {
-        deg = parseInt(value[0]) + 90
+        deg = parseInt(value[0], 10) + 90
     }
     const rotateStr = `rotate(${deg}deg)`
     element.style.transform = rotateStr
@@ -245,7 +245,7 @@ const getClickPoint = (event) => {
             x: Math.round(event.touches[0].clientX),
             y: Math.round(event.touches[0].clientY),
         }
-    } else if (event.type.indexOf('mouse') > -1) {
+    } if (event.type.indexOf('mouse') > -1) {
         return {
             x: event.clientX,
             y: event.clientY,
@@ -269,19 +269,15 @@ const getTouchPoints2 = (event) => {
 /**
  * 返回两个点之间的横纵坐标差
  */
-const getPointOffset = (point1, point2) => {
-    return {
-        offsetX: point2.x - point1.x,
-        offsetY: point2.y - point1.y,
-    }
-}
+const getPointOffset = (point1, point2) => ({
+    offsetX: point2.x - point1.x,
+    offsetY: point2.y - point1.y,
+})
 
 /**
  * Util Functions
  */
-const isMobile = () => {
-    return /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)
-}
+const isMobile = () => /Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)
 
 export const Element = {
     zoom,
@@ -295,7 +291,7 @@ export const Event = {
     getPointOffset,
 }
 export const Canvas = {
-    rotateR90: rotateCanvasR90
+    rotateR90: rotateCanvasR90,
 }
 export const Mosaic = {
     makeMosaicGrid,

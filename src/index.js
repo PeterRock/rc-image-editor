@@ -1,8 +1,12 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import LoadingMask from './LoadingMask'
-import Toolbar, { RangeSlider, ItemIcon, Split, TogglePanel } from './Toolbar'
-import { Canvas, Mosaic, Export, Element, Event, Util } from './utils'
+import Toolbar, {
+    RangeSlider, ItemIcon, Split, TogglePanel,
+} from './Toolbar'
+import {
+    Canvas, Mosaic, Export, Element, Event, Util,
+} from './utils'
 import './index.scss'
 
 class ImageEditor extends Component {
@@ -26,7 +30,8 @@ class ImageEditor extends Component {
     }
 
     componentDidMount() {
-        this.props.data && this.loadData(this.props.data)
+        const { data } = this.props
+        if (data) this.loadData(data)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -73,6 +78,7 @@ class ImageEditor extends Component {
         this.canvasWrapper.style.left = `${distX}px`
         this.canvasWrapper.style.top = `${distY}px`
     }
+
     onCanvasEditorMouseDown = (event) => {
         event.preventDefault()
         event.stopPropagation()
@@ -80,8 +86,10 @@ class ImageEditor extends Component {
         this.startPoint = Event.getClickPoint(event)
         // 开始触摸的两个点和触摸时候的原始缩放比例
         this.startPoints2 = Event.getTouchPoints2(event)
-        this.zoomLevelStart = this.state.zoomLevel
+        const { zoomLevel } = this.state
+        this.zoomLevelStart = zoomLevel
     }
+
     onCanvasEditorMouseMove = (event) => {
         if (this.listenMoving) {
             // 处理是双指缩放问题还是单点移动
@@ -102,6 +110,7 @@ class ImageEditor extends Component {
             }
         }
     }
+
     onCanvasEditorMouseUp = () => {
         this.listenMoving = false
         this.startPoint = { x: 0, y: 0 }
@@ -125,7 +134,7 @@ class ImageEditor extends Component {
 
             const { x, y } = this.penStartPoint
             const currentPoint = Event.getClickPoint(event)
-            let { offsetX, offsetY } = Event.getPointOffset(this.penStartPoint, currentPoint)
+            const { offsetX, offsetY } = Event.getPointOffset(this.penStartPoint, currentPoint)
             // 处理边缘溢出的情况
             const drawX = (x - offsetLeft) - penSize / 2
             const drawY = (y - offsetTop) - penSize / 2
@@ -141,6 +150,7 @@ class ImageEditor extends Component {
             this.penStartPoint = currentPoint
         }
     }
+
     onMosaicMouseUp = () => {
         this.mosaicMaking = false
         this.penStartPoint = null
@@ -159,6 +169,7 @@ class ImageEditor extends Component {
         this.setState({ loading: false })
         this.toggleMoveable(true)
     }
+
     loadData = (data) => {
         if (!data) { console.log('image Data is empty'); return }
         this.setState({ loading: true })
@@ -178,6 +189,7 @@ class ImageEditor extends Component {
             isEditing: true,
         })
     }
+
     makeMosaic = () => {
         const { isMosaic } = this.state
         this.canvas.onmousedown = isMosaic ? null : this.onMosaicMouseDown
@@ -190,6 +202,7 @@ class ImageEditor extends Component {
         this.canvas.ontouchcancel = isMosaic ? null : this.onMosaicMouseUp
         this.resetToolbar({ isMosaic: !isMosaic })
     }
+
     toggleMoveable = (moveable) => {
         if (this.editor) {
             const op = moveable ? 'addEventListener' : 'removeEventListener'
@@ -210,10 +223,12 @@ class ImageEditor extends Component {
         const { zoomLevel } = this.state
         this.zoomTo(zoomLevel * 1.2)
     }
+
     zoomOut = () => {
         const { zoomLevel } = this.state
         this.zoomTo(zoomLevel * 0.8)
     }
+
     zoomToFit = () => {
         const zoomLevel = Element.zoomToFit(
             this.canvasWrapper,
@@ -224,6 +239,7 @@ class ImageEditor extends Component {
         )
         this.setState({ zoomLevel })
     }
+
     zoomTo = (zoomLevel) => {
         Element.zoom(this.canvasWrapper, this.canvas.width, this.canvas.height, zoomLevel)
         this.setState({ zoomLevel })
@@ -233,6 +249,7 @@ class ImageEditor extends Component {
     rotateCanvasDom = () => {
         Element.rotateR90(this.canvas)
     }
+
     rotateImage = () => {
         const { rotating } = this.state
         if (rotating) { return }
@@ -251,10 +268,13 @@ class ImageEditor extends Component {
 
         this.setState({ rotating: false })
     }
+
     // 撤销
     restore = () => {
-        this.imageOrigin.src = this.props.data
+        const { data } = this.props
+        this.imageOrigin.src = data
     }
+
     // 重设编辑条按钮状态
     resetToolbar = (value) => {
         this.setState({
@@ -262,6 +282,7 @@ class ImageEditor extends Component {
             ...value,
         })
     }
+
     save = () => {
         const { onSave } = this.props
         if (typeof onSave === 'function') {
@@ -271,14 +292,17 @@ class ImageEditor extends Component {
             isEditing: false,
         })
     }
+
     downloadJpg = () => {
         Export.toJpg(this.canvas)
     }
+
     onPenSizeChange = (event) => {
         this.setState({
             penSize: event.target.value,
         })
     }
+
     dealScroll = (visible) => {
         if (visible) {
             document.body.style.height = '100%'
@@ -295,7 +319,9 @@ class ImageEditor extends Component {
             penSize,
         } = this.state
         const { toolbar, editable } = this.props
-        const { mosaic, restore, downloadJpg, rotate } = toolbar || {}
+        const {
+            mosaic, restore, downloadJpg, rotate,
+        } = toolbar || {}
         this.dealScroll(visible)
         const isMobile = Util.isMobile()
         if (!visible) { return null }
@@ -309,35 +335,35 @@ class ImageEditor extends Component {
                         <ItemIcon onClick={this.zoomToFit} name="icon-zoom-fit" title="适合窗口" />
                         <ItemIcon visible={!isEditing} onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
                         <Split />
-                        {
-                            editable && (
-                                <Fragment>
-                                    {isEditing && (
-                                        <Fragment>
-                                            <ItemIcon visible={restore} onClick={this.restore} name="icon-restore" title="清除所有更改" />
-                                            <ItemIcon
-                                                visible={mosaic}
-                                                active={isMosaic}
-                                                name="icon-mosaic"
-                                                onClick={this.makeMosaic}
-                                                title="马赛克"
-                                                extra={
-                                                    <TogglePanel visible={isMosaic}>
-                                                        <RangeSlider onChange={this.onPenSizeChange} min={10} max={200} value={penSize} />
-                                                    </TogglePanel>
-                                                }
-                                            />
-                                            <ItemIcon visible={downloadJpg} onClick={this.downloadJpg} name="icon-download" title="导出Jpg图片" />
-                                            <ItemIcon visible={rotate} onClick={this.rotateImage} name="icon-rotate-right" title="旋转图片(修改)" />
-                                        </Fragment>)
-                                    }
-                                    <ItemIcon visible={!isEditing} onClick={this.startEditing} name="icon-edit" title="编辑图片" />
-                                    <ItemIcon visible={isEditing} onClick={this.save} name="icon-check" title="保存" />
-                                    <Split />
-                                </Fragment>
-                            )
-                        }
-                        <span onClick={this.onModalClose}><ItemIcon name="icon-close" title="关闭" /></span>
+                        {editable && (
+                            <Fragment>
+                                {isEditing && (
+                                    <Fragment>
+                                        <ItemIcon visible={restore} onClick={this.restore} name="icon-restore" title="清除所有更改" />
+                                        <ItemIcon
+                                            visible={mosaic}
+                                            active={isMosaic}
+                                            name="icon-mosaic"
+                                            onClick={this.makeMosaic}
+                                            title="马赛克"
+                                            extra={(
+                                                <TogglePanel visible={isMosaic}>
+                                                    <RangeSlider onChange={this.onPenSizeChange} min={10} max={200} value={penSize} />
+                                                </TogglePanel>
+                                            )}
+                                        />
+                                        <ItemIcon visible={downloadJpg} onClick={this.downloadJpg} name="icon-download" title="导出Jpg图片" />
+                                        <ItemIcon visible={rotate} onClick={this.rotateImage} name="icon-rotate-right" title="旋转图片(修改)" />
+                                    </Fragment>)
+                                }
+                                <ItemIcon visible={!isEditing} onClick={this.startEditing} name="icon-edit" title="编辑图片" />
+                                <ItemIcon visible={isEditing} onClick={this.save} name="icon-check" title="保存" />
+                                <Split />
+                            </Fragment>
+                        )}
+                        <span role="button" tabIndex={0} onClick={this.onModalClose} onKeyUp={this.onModalClose}>
+                            <ItemIcon name="icon-close" title="关闭" />
+                        </span>
                     </Toolbar>
                     <div className="imge-container" ref={(ref) => { this.editor = ref }}>
                         <LoadingMask loading={loading} />
@@ -345,7 +371,9 @@ class ImageEditor extends Component {
                             ref={(ref) => { this.canvasWrapper = ref }}
                             className="canvas-wrapper"
                         >
-                            <canvas ref={(ref) => { this.canvas = ref }}>您的浏览器不支持canvas</canvas>
+                            <canvas ref={(ref) => { this.canvas = ref }}>
+您的浏览器不支持canvas
+                            </canvas>
                         </div>
                     </div>
                 </div>
@@ -354,6 +382,7 @@ class ImageEditor extends Component {
     }
 }
 ImageEditor.propTypes = {
+    visible: PropTypes.bool,
     onClose: PropTypes.func,
     onSave: PropTypes.func,
     data: PropTypes.string,
@@ -364,10 +393,11 @@ ImageEditor.propTypes = {
             restore: PropTypes.bool,
             downloadJpg: PropTypes.bool,
             rotate: PropTypes.bool,
-        }
+        },
     ),
 }
 ImageEditor.defaultProps = {
+    visible: false,
     onClose: null,
     onSave: null,
     data: null,
@@ -377,7 +407,7 @@ ImageEditor.defaultProps = {
         restore: true,
         downloadJpg: false,
         rotate: true,
-    }
+    },
 }
 
 export default ImageEditor
