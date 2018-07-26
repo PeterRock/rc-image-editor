@@ -1,0 +1,28 @@
+.range-slider {
+    width: 120px;
+    height: auto;
+    position: relative;
+    padding: 4px 7px;
+    user-drag: none;
+    user-select: none;
+    cursor: pointer;
+    .range-slider-wrapper {
+        background: #3f3f3f;
+        .range-slider-bar {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #bababa;
+        }
+        .range-slider-control {
+            width: 14px;
+            position: absolute;
+            top: 0;
+            height: 14px;
+            border-radius: 8px;
+            transition: opacity 0.2s;
+            box-shadow: 0 5px 5px rgba(27, 27, 27, 0.31);
+            background: #ffffff;
+        }
+    }
+}

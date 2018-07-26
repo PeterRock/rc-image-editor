@@ -146,6 +146,34 @@ const rotateCanvasR90 = (canvas) => {
  * ---- Element Html元素操作
  */
 
+ /**
+  * 获取元素相对于document文档的左侧偏移量
+  */
+const getDocumentOffsetLeft = (element) => {
+    var actualLeft = element.offsetLeft;
+    var current = element.offsetParent;
+
+    while (current !== null) {
+        actualLeft += current.offsetLeft;
+        current = current.offsetParent;
+    }
+
+    return actualLeft;
+}
+/**
+ * 获取元素相对于document文档的左侧偏移量
+ */
+const getDocumentOffsetTop = (element) => {
+   var actualTop = element.offsetTop;
+   var current = element.offsetParent;
+
+   while (current !== null) {
+       actualTop += current.offsetTop;
+       current = current.offsetParent;
+   }
+
+   return actualTop;
+}
 /**
  * 缩放元素
  * @param {HTMLElement} wrapper 要操作的元素节点
@@ -284,6 +312,8 @@ export const Element = {
     zoomToFit,
     rotateR90: rotateElementR90,
     rotateRestore: rotateElementRestore,
+    getDocumentOffsetLeft,
+    getDocumentOffsetTop,
 }
 export const Event = {
     getClickPoint,
