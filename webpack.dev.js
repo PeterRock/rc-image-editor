@@ -1,6 +1,6 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const vConsolePlugin = require('vconsole-webpack-plugin');
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const vConsolePlugin = require('vconsole-webpack-plugin')
 
 module.exports = {
     mode: 'development',
@@ -8,7 +8,7 @@ module.exports = {
     context: path.resolve(__dirname),
 
     entry: {
-        app: ["@babel/polyfill", "./example/src/app.js"],
+        app: './example/src/app.js',
     },
 
     devServer: {
@@ -22,17 +22,17 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
             },
             {
                 test: /\.scss$/,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader']
-            }
-        ]
+                use: ['style-loader', 'css-loader'],
+            },
+        ],
     },
 
     plugins: [
@@ -42,7 +42,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'index.html',
             inject: false,
-            template: path.resolve(__dirname, 'example/src/index.html')
+            template: path.resolve(__dirname, 'example/src/index.html'),
         }),
-    ]
+    ],
 }

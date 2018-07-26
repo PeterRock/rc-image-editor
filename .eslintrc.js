@@ -1,3 +1,7 @@
 module.exports = {
-    "extends": "airbnb"
-};
+    extends: 'airbnb',
+    rules: {
+        indent: ['error', 4],
+        semi: ['error', 'never']
+    },
+}

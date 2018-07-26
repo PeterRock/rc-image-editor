@@ -1,23 +1,23 @@
-const path = require('path');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const path = require('path')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
     mode: 'production',
 
     entry: {
-        index: ["@babel/polyfill", "./src/index.js"],
+        index: './src/index.js',
     },
 
     output: {
         filename: '[name].js',
-        path: path.resolve(__dirname, "dist"),
+        path: path.resolve(__dirname, 'dist'),
         publicPath: '/',
-        libraryTarget: 'commonjs2'
+        libraryTarget: 'commonjs2',
     },
     resolve: {
         alias: {
-            'rc-image-editor': 'src/ImageEditor.js'
-        }
+            'rc-image-editor': 'src/ImageEditor.js',
+        },
     },
 
     module: {
@@ -25,20 +25,18 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
             },
             {
                 test: /\.scss$/,
-                use: ['style-loader', 'css-loader', 'sass-loader']
+                use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader', 'postcss-loader']
-            }
-        ]
+                use: ['style-loader', 'css-loader', 'postcss-loader'],
+            },
+        ],
     },
 
-    plugins: [
-        new CleanWebpackPlugin(['dist'])
-    ]
+    plugins: [new CleanWebpackPlugin(['dist'])],
 }
