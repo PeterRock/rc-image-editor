@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import LoadingMask from './LoadingMask'
 import Toolbar, {
@@ -338,9 +338,9 @@ class ImageEditor extends Component {
                         <ItemIcon visible={!isEditing} onClick={this.rotateCanvasDom} name="icon-rotate-right" title="旋转画布" />
                         <Split />
                         {editable && (
-                            <Fragment>
+                            <span>
                                 {isEditing && (
-                                    <Fragment>
+                                    <span>
                                         <ItemIcon visible={restore} onClick={this.restore} name="icon-restore" title="清除所有更改" />
                                         <ItemIcon
                                             visible={mosaic}
@@ -356,12 +356,12 @@ class ImageEditor extends Component {
                                         />
                                         <ItemIcon visible={downloadJpg} onClick={this.downloadJpg} name="icon-download" title="导出Jpg图片" />
                                         <ItemIcon visible={rotate} onClick={this.rotateImage} name="icon-rotate-right" title="旋转图片(修改)" />
-                                    </Fragment>)
+                                    </span>)
                                 }
                                 <ItemIcon visible={!isEditing} onClick={this.startEditing} name="icon-edit" title="编辑图片" />
                                 <ItemIcon visible={isEditing} onClick={this.save} name="icon-check" title="保存" />
                                 <Split />
-                            </Fragment>
+                            </span>
                         )}
                         <span role="button" tabIndex={0} onClick={this.onModalClose} onKeyUp={this.onModalClose}>
                             <ItemIcon name="icon-close" title="关闭" />
@@ -402,7 +402,7 @@ ImageEditor.defaultProps = {
     visible: false,
     onClose: null,
     onSave: null,
-    data: null,
+    data: '',
     editable: true,
     toolbar: {
         mosaic: true,
