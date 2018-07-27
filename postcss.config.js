@@ -1,9 +1,11 @@
+const autoprefixer = require('autoprefixer')
+
 module.exports = {
     plugins: [
-        require('autoprefixer')({
+        autoprefixer({
             browsers: [
-                'last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 9'
-            ]
-        })
-    ]
+                'last 2 versions', 'Firefox ESR', '> 1%', 'ie >= 9',
+            ],
+        }),
+    ],
 }

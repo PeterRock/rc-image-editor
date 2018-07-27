@@ -1,6 +1,6 @@
 {
   "name": "rc-image-editor",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Pick up an image, then edit and save it.",
   "main": "./dist/index.js",
   "repository": "https://github.com/PeterRock/rc-image-editor.git",
@@ -14,12 +14,12 @@
     "prepare": "yarn run build"
   },
   "dependencies": {
+    "autoprefixer": "^8.6.5",
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.6.2",
     "react": "^16.4.1"
   },
   "devDependencies": {
-    "autoprefixer": "^8.6.5",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
