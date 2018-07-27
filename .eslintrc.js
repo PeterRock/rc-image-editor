@@ -10,9 +10,11 @@ module.exports = {
         semi: ['error', 'never'],
         'max-len': ['error', 160],
         'no-param-reassign': ['off'],
-        'react/destructuring-assignment': [false],
+        'react/destructuring-assignment': ['off'],
         'react/jsx-indent': ['error', 4],
         'react/jsx-indent-props': ['error', 4],
         'react/jsx-filename-extension': ['off'],
+        'jsx-a11y/no-static-element-interactions': ['off'],
+        'jsx-a11y/click-events-have-key-events': ['off'],
     },
 }

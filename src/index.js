@@ -41,11 +41,10 @@ class ImageEditor extends Component {
                     visible: nextProps.visible,
                 })
                 this.dealScroll(nextProps.visible)
-
-                // 当props切换时候，只有当 visible 显示时候，data的变化才有意义
-                if (nextProps.visible && 'data' in nextProps) {
-                    this.loadData(nextProps.data)
-                }
+            }
+            // 当props切换时候，只有当 visible 显示时候，data的变化才有意义
+            if (nextProps.visible && 'data' in nextProps) {
+                this.loadData(nextProps.data)
             }
         }
     }
@@ -66,7 +65,7 @@ class ImageEditor extends Component {
             this.dealScroll(false)
             this.imageOrigin = null
 
-            onClose && onClose()
+            if (typeof onClose === 'function') onClose()
         }
     }
 
@@ -315,12 +314,26 @@ class ImageEditor extends Component {
         }
     }
 
+    goNext = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const { onSwitchPrev } = this.props
+        if (typeof onSwitchPrev === 'function') onSwitchPrev(e)
+    }
+
+    goPrev = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        const { onSwitchNext } = this.props
+        if (typeof onSwitchNext === 'function') onSwitchNext(e)
+    }
+
     render() {
         const {
             visible, loading, isEditing, isMosaic, moveable,
             penSize,
         } = this.state
-        const { toolbar, editable } = this.props
+        const { toolbar, editable, switchable } = this.props
         const {
             mosaic, restore, downloadJpg, rotate,
         } = toolbar || {}
@@ -378,6 +391,16 @@ class ImageEditor extends Component {
                             </canvas>
                         </div>
                     </div>
+                    {switchable && (
+                        <div className="switch-controls">
+                            <span className="switch-control-btn switch-control-btn-left" onClick={this.goPrev}>
+                                <i className="icon-arrow" />
+                            </span>
+                            <span className="switch-control-btn switch-control-btn-right" onClick={this.goNext}>
+                                <i className="icon-arrow" />
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
         )
@@ -387,6 +410,9 @@ ImageEditor.propTypes = {
     visible: PropTypes.bool,
     onClose: PropTypes.func,
     onSave: PropTypes.func,
+    switchable: PropTypes.bool,
+    onSwitchPrev: PropTypes.func,
+    onSwitchNext: PropTypes.func,
     data: PropTypes.string,
     editable: PropTypes.bool,
     toolbar: PropTypes.shape(
@@ -402,6 +428,9 @@ ImageEditor.defaultProps = {
     visible: false,
     onClose: null,
     onSave: null,
+    switchable: false,
+    onSwitchPrev: null,
+    onSwitchNext: null,
     data: '',
     editable: true,
     toolbar: {
