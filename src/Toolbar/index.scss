@@ -32,6 +32,9 @@
                 &.active {
                     background-color: rgba(140, 140, 140, 0.68)
                 }
+                &.disabled {
+                    opacity: 0.4;
+                }
             }
         }
         .imge-toolbar__split {

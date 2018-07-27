@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import LoadingMask from './LoadingMask'
-import Toolbar, {
-    RangeSlider, ItemIcon, Split, TogglePanel,
-} from './Toolbar'
-import {
-    Canvas, Mosaic, Export, Element, Event, Util,
-} from './utils'
+import Toolbar, { RangeSlider, ItemIcon, Split, TogglePanel } from './Toolbar'
+import { Canvas, Mosaic, Export, Element, Event, Util } from './utils'
 import './index.scss'
 
 class ImageEditor extends Component {
@@ -371,7 +367,7 @@ class ImageEditor extends Component {
                                         <ItemIcon visible={rotate} onClick={this.rotateImage} name="icon-rotate-right" title="旋转图片(修改)" />
                                     </span>)
                                 }
-                                <ItemIcon visible={!isEditing} onClick={this.startEditing} name="icon-edit" title="编辑图片" />
+                                <ItemIcon visible={!isEditing} disabled={loading} onClick={this.startEditing} name="icon-edit" title="编辑图片" />
                                 <ItemIcon visible={isEditing} onClick={this.save} name="icon-check" title="保存" />
                                 <Split />
                             </span>
@@ -425,19 +421,19 @@ ImageEditor.propTypes = {
     ),
 }
 ImageEditor.defaultProps = {
-    visible: false,
-    onClose: null,
-    onSave: null,
-    switchable: false,
-    onSwitchPrev: null,
-    onSwitchNext: null,
-    data: '',
-    editable: true,
-    toolbar: {
-        mosaic: true,
-        restore: true,
-        downloadJpg: false,
-        rotate: true,
+    visible: false, // 是否可见
+    onClose: null, // 关闭事件
+    onSave: null, // 保存事件
+    switchable: false, // 是否显示图片切换
+    onSwitchPrev: null, // 图片前切换
+    onSwitchNext: null, // 图片后切换
+    data: '', // 图片数据：url 或者dataURL
+    editable: true, // 允许编辑图片
+    toolbar: { // 工具图标配置
+        mosaic: true, // 打码
+        restore: true, // 重置
+        downloadJpg: false, // 导出Jpg下载
+        rotate: true, // 旋转
     },
 }
 

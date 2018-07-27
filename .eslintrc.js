@@ -10,6 +10,7 @@ module.exports = {
         semi: ['error', 'never'],
         'max-len': ['error', 160],
         'no-param-reassign': ['off'],
+        'object-curly-newline': ['off'],
         'react/destructuring-assignment': ['off'],
         'react/jsx-indent': ['error', 4],
         'react/jsx-indent-props': ['error', 4],

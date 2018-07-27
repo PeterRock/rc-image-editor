@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 const ItemIcon = (props) => {
     const {
         visible, active, name, onClick,
-        extra, alt, title,
+        extra, alt, title, disabled,
     } = props
     if (visible) {
         return (
@@ -12,8 +12,10 @@ const ItemIcon = (props) => {
                 <span
                     alt={alt}
                     title={title}
-                    onClick={onClick}
-                    className={`imge-toolbar-icon__wrapper${active ? ' active' : ''}`}
+                    onClick={disabled ? undefined : onClick}
+                    className={
+                        `imge-toolbar-icon__wrapper${active ? ' active' : ''}${disabled ? ' disabled' : ''}`
+                    }
                 >
                     <i className={`imge-toolbar__icon ${name}`} />
                 </span>
