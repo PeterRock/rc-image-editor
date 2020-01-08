@@ -21,11 +21,11 @@ const EditableImage = (props) => {
 class ImageEditorDemo extends React.PureComponent {
     state = {
         visible: false,
+        img: DEMO_IMG,
     }
     openEditor = (src) => {
         this.setState({
             visible: true,
-            data: src,
         })
     }
     afterClose = () => {
@@ -35,22 +35,23 @@ class ImageEditorDemo extends React.PureComponent {
     }
     onSave = (data) => {
         console.log('image data', data)
+        this.setState({ img: data })
     }
 
     render() {
-        const { visible, data } = this.state
+        const { visible, img } = this.state
         return (
             <div>
                 <EditableImage
                     onClick={this.openEditor}
-                    src={DEMO_IMG}
+                    src={img}
                     alt="SRC IMAGE"
                 />
                 <ImageEditor
                     visible={visible}
                     onClose={this.afterClose}
-                    onSaveDataURL={this.onSave}
-                    data={data}
+                    onSave={this.onSave}
+                    data={img}
                     toolbar={{
                         mosaic: true,
                         restore: true,
