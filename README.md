@@ -8,7 +8,7 @@
 ### Props
 
 |prop |type |default |description |
-|---|---|---|---|
+|:---|:---|:---|:---|
 |visible |boolean |false |编辑器是否可见 |
 |onClose |() => void |- |点击关闭按钮触发的事件 |
 |onSave |(imgData) => void |- |点击保存按钮触发的事件 |
